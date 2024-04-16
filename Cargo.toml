@@ -1,0 +1,14 @@
+[package]
+name = "gametime_riwayat"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-web = "4"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+serde = { version = "1.0.115", features = ["derive"] }
+
+[dev-dependencies]
+reqwest = { version = "0.12.3", features = ["json"] }
