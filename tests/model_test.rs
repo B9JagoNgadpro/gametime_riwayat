@@ -1,4 +1,4 @@
-use gametime_riwayat::model::transaction::Transaction;
+use gametime_riwayat::model::transaction::{Transaction, PaymentMethod, TransactionStatus};
 #[cfg(test)]
 mod tests {
     use uuid::Uuid;
@@ -21,8 +21,8 @@ mod tests {
             seller_id,
             buyer_id,
             price: 42069,
-            payment: "Credit Card".to_string(),
-            status: "Ordered".to_string(),
+            payment_method: PaymentMethod::CreditCard,
+            transaction_status: TransactionStatus::Ordered,
             order_time,
             paid_time: None,
             completed_time: None
@@ -31,9 +31,9 @@ mod tests {
         assert_eq!(transaction.id, id);
         assert_eq!(transaction.product_id, product_id);
         assert_eq!(transaction.price, 42069);
-        assert_eq!(transaction.payment, "Credit Card".to_string());
+        assert_eq!(transaction.payment_method, PaymentMethod::CreditCard);
 
-        assert_eq!(transaction.status, "Ordered".to_string());
+        assert_eq!(transaction.transaction_status, TransactionStatus::Ordered);
         assert_eq!(transaction.order_time, order_time);
         assert!(transaction.paid_time.is_none());
         assert!(transaction.completed_time.is_none());
@@ -53,8 +53,8 @@ mod tests {
             seller_id,
             buyer_id,
             price: 42069,
-            status: "Ordered".to_string(),
-            payment: "Credit Card".to_string(),
+            payment_method: PaymentMethod::CreditCard,
+            transaction_status: TransactionStatus::Ordered,
             order_time,
             paid_time: None,
             completed_time: None
@@ -63,21 +63,21 @@ mod tests {
         assert_eq!(transaction.id, id);
         assert_eq!(transaction.product_id, product_id);
         assert_eq!(transaction.price, 42069);
-        assert_eq!(transaction.payment, "Credit Card".to_string());
+        assert_eq!(transaction.payment_method, PaymentMethod::CreditCard);
         
-        assert_eq!(transaction.status, "Ordered".to_string());
+        assert_eq!(transaction.transaction_status, TransactionStatus::Ordered);
         assert_eq!(transaction.order_time, order_time);
         assert!(transaction.paid_time.is_none());
         assert!(transaction.completed_time.is_none());
 
         thread::sleep(Duration::from_millis(250));
         transaction.next_step();
-        assert_eq!(transaction.status, "Paid".to_string());
+        assert_eq!(transaction.transaction_status, TransactionStatus::Paid);
         assert!(!transaction.paid_time.is_none());
 
         thread::sleep(Duration::from_millis(250));
         transaction.next_step();
-        assert_eq!(transaction.status, "Completed".to_string());
+        assert_eq!(transaction.transaction_status, TransactionStatus::Completed);
         assert!(!transaction.completed_time.is_none());
     }
 }
