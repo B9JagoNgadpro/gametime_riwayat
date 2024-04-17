@@ -1,8 +1,8 @@
+use gametime_riwayat::model::transaction::Transaction;
 #[cfg(test)]
 mod tests {
-    use actix_web::test;
     use uuid::Uuid;
-    use chrono::{DateTime, Utc};
+    use chrono::Utc;
     use std::thread;
     use std::time::Duration;
     use super::*;
@@ -47,7 +47,7 @@ mod tests {
         let buyer_id = Uuid::new_v4();
         let order_time = Utc::now();
 
-        let transaction = Transaction {
+        let mut transaction = Transaction {
             id,
             product_id,
             seller_id,
@@ -70,12 +70,12 @@ mod tests {
         assert!(transaction.paid_time.is_none());
         assert!(transaction.completed_time.is_none());
 
-        thread::sleep(Duration::from_secs(1));
+        thread::sleep(Duration::from_millis(250));
         transaction.next_step();
         assert_eq!(transaction.status, "Paid".to_string());
         assert!(!transaction.paid_time.is_none());
 
-        thread::sleep(Duration::from_secs(1));
+        thread::sleep(Duration::from_millis(250));
         transaction.next_step();
         assert_eq!(transaction.status, "Completed".to_string());
         assert!(!transaction.completed_time.is_none());
