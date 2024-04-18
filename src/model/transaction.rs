@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 use chrono::{DateTime, Utc};
 use uuid::Uuid;
 use std::fmt;
+use rand::Rng;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Transaction {
@@ -54,19 +55,18 @@ impl fmt::Display for TransactionStatus {
 }
 
 impl Transaction {
-    pub fn next_step(&mut self) {
-        match self.transaction_status {
-            TransactionStatus::Ordered => {
-                self.transaction_status = TransactionStatus::Paid;
-                self.paid_time = Some(Utc::now());
-            }
-            TransactionStatus::Paid => {
-                self.transaction_status = TransactionStatus::Completed;
-                self.completed_time = Some(Utc::now());
-            }
-            _ => {
-
-            }
+    pub fn mock() -> Self {
+        Self {
+            id: Uuid::new_v4(),
+            product_id: Uuid::new_v4(),
+            seller_id: Uuid::new_v4(),
+            buyer_id: Uuid::new_v4(),
+            price: rand::thread_rng().gen_range(50..500),
+            payment_method: PaymentMethod::EWallet,
+            transaction_status: TransactionStatus::Ordered,
+            order_time: Utc::now(),
+            paid_time: None,
+            completed_time: None,
         }
     }
 }
