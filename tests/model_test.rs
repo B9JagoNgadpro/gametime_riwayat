@@ -3,8 +3,6 @@ use gametime_riwayat::model::transaction::{Transaction, PaymentMethod, Transacti
 mod tests {
     use uuid::Uuid;
     use chrono::Utc;
-    use std::thread;
-    use std::time::Duration;
     use super::*;
 
     #[actix_web::test]
@@ -37,5 +35,21 @@ mod tests {
         assert_eq!(transaction.order_time, order_time);
         assert!(transaction.paid_time.is_none());
         assert!(transaction.completed_time.is_none());
+    }
+
+    #[actix_web::test]
+    async fn test_history_initiate() {
+        let transactions = vec![
+            Transaction::mock(),
+            Transaction::mock(),
+            Transaction::mock(),
+        ];
+
+        let mut builder = HistoryBuilder::new();
+        builder.transactions.extend(transactions.clone());
+
+        let history = builder.build();
+
+        assert_eq!(history.transactions, transactions);
     }
 }
