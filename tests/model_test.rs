@@ -1,6 +1,7 @@
 use gametime_riwayat::model::transaction::{Transaction, PaymentMethod, TransactionStatus};
 #[cfg(test)]
 mod tests {
+    use gametime_riwayat::model::history::HistoryBuilder;
     use uuid::Uuid;
     use chrono::Utc;
     use super::*;

@@ -4,7 +4,7 @@ use uuid::Uuid;
 use std::fmt;
 use rand::Rng;
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 pub struct Transaction {
     pub id: Uuid,
     pub product_id: Uuid,
