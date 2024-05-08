@@ -3,6 +3,7 @@ use rand::Rng;
 
 #[cfg(test)]
 mod tests {
+    use gametime_riwayat::model::toy::Toy;
     use uuid::Uuid;
     use chrono::Utc;
     use super::*;
