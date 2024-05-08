@@ -10,15 +10,19 @@ mod tests {
 
     #[actix_web::test]
     async fn test_transaction_creation() {
+        let mut rng = rand::thread_rng();
+        
         let product_id = Uuid::new_v4();
         let seller_id = Uuid::new_v4();
         let buyer_id = Uuid::new_v4();
+        let amount = rng.gen_range(1..200);
         let time = Utc::now();
 
         let transaction = Transaction {
             product_id,
             seller_id,
             buyer_id,
+            amount,
             payment_method: PaymentMethod::CreditCard,
             status: TransactionStatus::Ordered,
             time,
