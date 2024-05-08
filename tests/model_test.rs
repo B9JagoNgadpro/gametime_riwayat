@@ -1,4 +1,6 @@
 use gametime_riwayat::model::transaction::{Transaction, PaymentMethod, TransactionStatus};
+use rand::Rng;
+
 #[cfg(test)]
 mod tests {
     use uuid::Uuid;
@@ -26,5 +28,30 @@ mod tests {
 
         assert_eq!(transaction.status, TransactionStatus::Ordered);
         assert_eq!(transaction.time, time);
+    }
+
+    #[actix_web::test]
+    async fn test_toy_creation() {
+        let mut rng = rand::thread_rng();
+
+        let seller_id = Uuid::new_v4();
+        let item_id = Uuid::new_v4();
+        let price = rng.gen_range(10000..500000);
+        let stock = rng.gen_range(0..1000);
+        let sold = rng.gen_range(0..1000);
+
+        let toy = Toy {
+            seller_id,
+            item_id,
+            price,
+            stock,
+            sold,
+        };
+
+        assert_eq!(toy.seller_id, seller_id);
+        assert_eq!(toy.item_id, item_id);
+        assert_eq!(toy.price, price);
+        assert_eq!(toy.stock, stock);
+        assert_eq!(toy.sold, sold);
     }
 }
