@@ -12,6 +12,7 @@ mod tests {
     async fn test_transaction_creation() {
         let mut rng = rand::thread_rng();
         
+        let id = Uuid::new_v4();
         let product_id = Uuid::new_v4();
         let seller_id = Uuid::new_v4();
         let buyer_id = Uuid::new_v4();
@@ -19,6 +20,7 @@ mod tests {
         let time = Utc::now();
 
         let transaction = Transaction {
+            id,
             product_id,
             seller_id,
             buyer_id,
@@ -28,6 +30,7 @@ mod tests {
             time,
         };
 
+        assert_eq!(transaction.id, id);
         assert_eq!(transaction.product_id, product_id);
         assert_eq!(transaction.payment_method, PaymentMethod::CreditCard);
 

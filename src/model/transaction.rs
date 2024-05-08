@@ -6,6 +6,7 @@ use std::fmt;
 
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 pub struct Transaction {
+    pub id: Uuid,
     pub product_id: Uuid,
     pub seller_id: Uuid,
     pub buyer_id: Uuid,
@@ -55,6 +56,7 @@ impl Transaction {
     pub fn mock() -> Self {
         let mut rng = rand::thread_rng();
         Self {
+            id: Uuid::new_v4(),
             product_id: Uuid::new_v4(),
             seller_id: Uuid::new_v4(),
             buyer_id: Uuid::new_v4(),
