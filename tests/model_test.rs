@@ -3,7 +3,7 @@ use rand::Rng;
 
 #[cfg(test)]
 mod tests {
-    use gametime_riwayat::model::toy::Toy;
+    use gametime_riwayat::model::game::Game;
     use uuid::Uuid;
     use chrono::Utc;
     use super::*;
@@ -48,7 +48,7 @@ mod tests {
         let stock = rng.gen_range(0..1000);
         let sold = rng.gen_range(0..1000);
 
-        let toy = Toy {
+        let toy = Game {
             seller_id,
             item_id,
             price,

@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
-pub struct Toy {
+pub struct Game {
     pub item_id: Uuid,
     pub seller_id: Uuid,
     pub price: i32,
