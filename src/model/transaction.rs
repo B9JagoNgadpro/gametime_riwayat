@@ -7,9 +7,6 @@ use std::fmt;
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 pub struct Transaction {
     pub id: Uuid,
-    pub product_id: Uuid,
-    pub seller_id: Uuid,
-    pub buyer_id: Uuid,
     pub amount: i32,
     pub payment_method: PaymentMethod,
     pub status: TransactionStatus,
@@ -57,9 +54,6 @@ impl Transaction {
         let mut rng = rand::thread_rng();
         Self {
             id: Uuid::new_v4(),
-            product_id: Uuid::new_v4(),
-            seller_id: Uuid::new_v4(),
-            buyer_id: Uuid::new_v4(),
             amount: rng.gen_range(1..20),
             payment_method: PaymentMethod::EWallet,
             status: TransactionStatus::Ordered,
