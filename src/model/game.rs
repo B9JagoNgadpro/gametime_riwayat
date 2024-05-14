@@ -3,9 +3,6 @@ use uuid::Uuid;
 
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 pub struct Game {
-    pub item_id: Uuid,
-    pub seller_id: Uuid,
-    pub price: i32,
-    pub stock: i32,
-    pub sold: i32
+    pub id: Uuid,
+    pub transaction_id: Uuid
 }

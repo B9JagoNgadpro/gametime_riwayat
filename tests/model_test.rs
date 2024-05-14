@@ -39,27 +39,16 @@ mod tests {
     }
 
     #[actix_web::test]
-    async fn test_toy_creation() {
-        let mut rng = rand::thread_rng();
-
-        let seller_id = Uuid::new_v4();
-        let item_id = Uuid::new_v4();
-        let price = rng.gen_range(10000..500000);
-        let stock = rng.gen_range(0..1000);
-        let sold = rng.gen_range(0..1000);
+    async fn test_game_creation() {
+        let id = Uuid::new_v4();
+        let transaction_id = Uuid::new_v4();
 
         let toy = Game {
-            seller_id,
-            item_id,
-            price,
-            stock,
-            sold,
+            id,
+            transaction_id,
         };
 
-        assert_eq!(toy.seller_id, seller_id);
-        assert_eq!(toy.item_id, item_id);
-        assert_eq!(toy.price, price);
-        assert_eq!(toy.stock, stock);
-        assert_eq!(toy.sold, sold);
+        assert_eq!(toy.id, id);
+        assert_eq!(toy.transaction_id, transaction_id);
     }
 }
