@@ -10,15 +10,11 @@ mod tests {
 
     #[actix_web::test]
     async fn test_transaction_creation() {
-        let mut rng = rand::thread_rng();
-        
         let id = Uuid::new_v4();
-        let amount = rng.gen_range(1..200);
         let time = Utc::now();
 
         let transaction = Transaction {
             id,
-            amount,
             payment_method: PaymentMethod::CreditCard,
             status: TransactionStatus::Ordered,
             time,
@@ -33,16 +29,20 @@ mod tests {
 
     #[actix_web::test]
     async fn test_game_creation() {
+        let mut rng = rand::thread_rng();
+
         let id = Uuid::new_v4();
         let transaction_id = Uuid::new_v4();
         let seller_id = Uuid::new_v4();
         let buyer_id = Uuid::new_v4();
+        let amount = rng.gen_range(1..200);
 
         let toy = Game {
             id,
             transaction_id,
             seller_id,
-            buyer_id
+            buyer_id,
+            amount
         };
 
         assert_eq!(toy.id, id);
