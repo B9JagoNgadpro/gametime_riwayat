@@ -1,43 +1,20 @@
 # Riwayat Transaksi
 Microservice dari repository **Game Time** yang memiliki peran sebagai pengatur riwayat transaksi antarpengguna aplikasi.
 
-Merekam detail pembelian dan penjualan, termasuk ID transaksi, produk yang dibeli, harga, status pembayaran, dan sebagainya.
-Tampilkan riwayat transaksi secara intuitif dan mudah diakses bagi Pembeli dan Penjual.
-Pastikan sistem yang efisien untuk merekam dan menampilkan riwayat transaksi.
-
-
 [![main](https://github.com/B9JagoNgadpro/gametime_riwayat/actions/workflows/rust.yml/badge.svg?branch=main)](https://github.com/B9JagoNgadpro/gametime_riwayat/actions/workflows/rust.yml)
 
-## Table of Contents
-- [Features](#features)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
+## Monitoring
+Untuk bagian monitoring, sebenarnya pada *deployment* Railway sudah disediakan visualisasi untuk memonitor penggunaan CPU, memory, dan network.
 
-## Fitur
+![Railway Monitoring](railway-monitoring.png)
 
-- Merekam detail transaksi antarpengguna.
-- Menambahkan transaksi
-- [Feature 3]
-- ...
+Saya juga sudah mencoba untuk melihat metrik menggunakan prometheus di sini.
 
-## Requirements
+![alt text](prometheus-metrics.png)
 
-- Rust (version x.x.x)
-- [Any other dependencies or requirements]
+## Profiling
+Kurangnya tutorial menggunakan Rust membuat saya kesulitan dalam menerapkan profiling. Saya sudah mencoba untuk menggunakan package `hyperfine` untuk benchmarking dan `flamegraph` untuk visualisasi juga, namun keduanya tidak dapat dijalankan pada komputer saya sebab saya menggunakan windows. Untuk saat ini saya masih belum menemukan solusinya, namun akan saya perbaiki secepat mungkin.
 
-## Instalasi
-
-[Instructions on how to install your microservice]
-
-```bash
-git clone [repository-url]
-cd [repository-folder]
-cargo build
-```
-
-## Pemakaian
+![Flamegraph Error](flamegraph-error.png)
 
 ## Lisensi
