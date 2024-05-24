@@ -3,7 +3,7 @@ pub mod repository;
 pub mod service;
 pub mod controller;
 
-use actix_web::{dev::Service, web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{web, App, HttpResponse, HttpServer, Responder, dev::Service};
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
 use dotenv::dotenv;
@@ -64,9 +64,10 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(move || {
         App::new()
-            .app_data(pool.clone())
+            .app_data(web::Data::new(pool.clone()))
             .route("/", web::get().to(index))
             .route("/metrics", web::get().to(metrics_handler))
+            .configure(controller::transaction_controller::config)
             .wrap_fn(|req, srv| {
                 let method = req.method().to_string();
                 let fut = srv.call(req);

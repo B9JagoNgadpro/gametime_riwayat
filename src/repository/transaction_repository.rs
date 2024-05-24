@@ -1,14 +1,13 @@
 use sqlx::{Pool, Postgres};
 use uuid::Uuid;
+use crate::model::{game::Game, transaction::Transaction};
 
-use crate::model::{game::Game, transaction::{PaymentMethod, Transaction, TransactionStatus}};
-
-pub struct TransactionRepository {
-    pool: Pool<Postgres>
+pub struct TransactionRepository<'a> {
+    pool: &'a Pool<Postgres>,
 }
 
-impl TransactionRepository {
-    pub fn new(pool: Pool<Postgres>) -> Self {
+impl<'a> TransactionRepository<'a> {
+    pub fn new(pool: &'a Pool<Postgres>) -> Self {
         Self { pool }
     }
 
@@ -19,11 +18,11 @@ impl TransactionRepository {
             VALUES ($1, $2, $3, $4)
             "#,
             transaction.id,
-            transaction.payment_method as PaymentMethod,
-            transaction.status as TransactionStatus,
+            transaction.payment_method.to_string(),
+            transaction.status.to_string(),
             transaction.time
         )
-        .execute(&self.pool)
+        .execute(self.pool)
         .await?;
 
         Ok(())
@@ -41,43 +40,81 @@ impl TransactionRepository {
             game.buyer_id,
             game.amount
         )
-        .execute(&self.pool)
+        .execute(self.pool)
         .await?;
 
         Ok(())
     }
 
-    pub async fn get_transactions_buyer(&self, buyer_id: &str) -> Result<(), sqlx::Error> {
-        let transactions = sqlx::query_as!(
-            Transaction,
+    pub async fn get_transactions_buyer(&self, buyer_id: &Uuid) -> Result<Vec<Transaction>, sqlx::Error> {
+        let rows = sqlx::query!(
             r#"
-            SELECT t.id, t.payment_method as "payment_method: _", t.status as "status: _", t.time
+            SELECT t.id, t.payment_method, t.status, t.time
             FROM transactions AS t
             JOIN games AS g ON t.id = g.transaction_id
             WHERE g.buyer_id = $1
             "#,
             buyer_id
         )
-        .fetch_all(&self.pool)
+        .fetch_all(self.pool)
         .await?;
+
+        let transactions: Vec<Transaction> = rows.into_iter().map(|row| {
+            Transaction {
+                id: row.id,
+                payment_method: row.payment_method.parse().unwrap(),
+                status: row.status.parse().unwrap(),
+                time: row.time,
+            }
+        }).collect();
 
         Ok(transactions)
     }
 
-    pub async fn get_transactions_seller(&self, seller_id: &str) -> Result<(), sqlx::Error> {
-        let transactions = sqlx::query_as!(
-            Transaction,
+    pub async fn get_transactions_seller(&self, seller_id: &Uuid) -> Result<Vec<Transaction>, sqlx::Error> {
+        let rows = sqlx::query!(
             r#"
-            SELECT t.id, t.payment_method as "payment_method: _", t.status as "status: _", t.time
+            SELECT t.id, t.payment_method, t.status, t.time
             FROM transactions AS t
             JOIN games AS g ON t.id = g.transaction_id
-            WHERE g.buyer_id = $1
+            WHERE g.seller_id = $1
             "#,
             seller_id
         )
-        .fetch_all(&self.pool)
+        .fetch_all(self.pool)
         .await?;
 
+        let transactions: Vec<Transaction> = rows.into_iter().map(|row| {
+            Transaction {
+                id: row.id,
+                payment_method: row.payment_method.parse().unwrap(),
+                status: row.status.parse().unwrap(),
+                time: row.time,
+            }
+        }).collect();
+
         Ok(transactions)
+    }
+
+    pub async fn find_by_id(&self, id: Uuid) -> Result<Transaction, sqlx::Error> {
+        let row = sqlx::query!(
+            r#"
+            SELECT id, payment_method, status, time
+            FROM transactions
+            WHERE id = $1
+            "#,
+            id
+        )
+        .fetch_one(self.pool)
+        .await?;
+
+        let transaction = Transaction {
+            id: row.id,
+            payment_method: row.payment_method.parse().unwrap(),
+            status: row.status.parse().unwrap(),
+            time: row.time,
+        };
+
+        Ok(transaction)
     }
 }

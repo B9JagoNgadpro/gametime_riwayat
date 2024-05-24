@@ -9,4 +9,4 @@ CREATE TABLE games (
     FOREIGN KEY (transaction_id) REFERENCES transactions(id)
 )
 
--- Down migration
+-- Down migrations
