@@ -1,6 +1,5 @@
-use uuid::Uuid;
-use crate::model::transaksi::Transaksi;
 use crate::repository::transaksi_repository::TransaksiRepository;
+use crate::model::transaksi::Transaksi;
 
 pub struct TransaksiService {
     repository: TransaksiRepository,
@@ -28,7 +27,7 @@ impl TransaksiService {
         Ok(())
     }
 
-    pub async fn get_user_transactions(&self, user_id: Uuid) -> Result<Vec<Transaksi>, String> {
+    pub async fn get_user_transactions(&self, user_id: &str) -> Result<Vec<Transaksi>, String> {
         let mut transactions = self.repository.get_transactions_by_user(user_id)
             .await.map_err(|e| e.to_string())?;
         

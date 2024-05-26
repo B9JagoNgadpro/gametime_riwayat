@@ -9,5 +9,5 @@ pub struct Transaksi {
     pub games: Vec<Game>,
     pub total_harga: i64,
     pub tanggal_pembayaran: DateTime<Utc>,
-    pub pembeli_id: Uuid,
+    pub pembeli_id: String,
 }

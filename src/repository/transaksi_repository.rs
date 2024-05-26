@@ -32,14 +32,15 @@ impl TransaksiRepository {
         game: &Game
     ) -> Result<(), sqlx::Error> {
         sqlx::query!(
-            "INSERT INTO game (id, nama, deskripsi, harga, kategori)
-             VALUES ($1, $2, $3, $4, $5)
+            "INSERT INTO game (id, nama, deskripsi, harga, kategori, penjual_id)
+             VALUES ($1, $2, $3, $4, $5, $6)
              ON CONFLICT (id) DO NOTHING",
             game.id,
             game.nama,
             game.deskripsi,
             game.harga as i64,
             game.kategori,
+            game.penjual_id
         )
         .execute(&mut **tx)
         .await?;
@@ -67,11 +68,11 @@ impl TransaksiRepository {
 
     pub async fn get_transactions_by_user(
         &self,
-        user_id: Uuid
+        user_id: &str
     ) -> Result<Vec<Transaksi>, sqlx::Error> {
         let transactions = sqlx::query!(
             r#"
-            SELECT id, total_harga, status_pembayaran, tanggal_pembayaran, pembeli_id
+            SELECT id, total_harga, tanggal_pembayaran, pembeli_id
             FROM transaksi
             WHERE pembeli_id = $1
             ORDER BY tanggal_pembayaran DESC
@@ -100,7 +101,7 @@ impl TransaksiRepository {
         let games = sqlx::query_as!(
             Game,
             r#"
-            SELECT g.id, g.nama, g.deskripsi, g.harga, g.kategori
+            SELECT g.id, g.nama, g.deskripsi, g.harga, g.kategori, g.penjual_id
             FROM game g
             JOIN transaksi_game tg ON g.id = tg.game_id
             WHERE tg.transaksi_id = $1
