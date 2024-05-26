@@ -1,4 +1,4 @@
-name: Rust
+name: Rust CI
 
 on:
   push:
@@ -11,12 +11,30 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
+
+    - name: Install SQLx CLI
+      run: cargo install sqlx-cli
+
+    - name: Set up database
+      run: sudo apt-get install -y postgresql-client
+
+    - name: Prepare SQLx
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      run: cargo sqlx prepare --check
+
     - name: Build
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        REDIS_URL: ${{ secrets.REDIS_URL }}
       run: cargo build --verbose
+
     - name: Run tests
+      env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        REDIS_URL: ${{ secrets.REDIS_URL }}
       run: cargo test --verbose
