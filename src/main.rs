@@ -44,7 +44,7 @@ async fn main() -> std::io::Result<()> {
             .route("/get/{user_id}", web::get().to(get_user_transactions))
             .route("/get-penjual/{penjual_id}", web::get().to(get_transaction_game_info_by_penjual))
     })
-    .bind(("127.0.0.1", port))?
+    .bind(("0.0.0.0", port))?
     .run()
     .await
 }
