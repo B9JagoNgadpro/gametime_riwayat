@@ -1,6 +1,6 @@
 use sqlx::{PgPool, Postgres, Transaction};
 use uuid::Uuid;
-use crate::model::{transaksi::Transaksi, game::Game};
+use crate::model::{game::Game, transaction_info::TransactionGameInfo, transaksi::Transaksi};
 
 pub struct TransaksiRepository {
     pub pool: PgPool,
@@ -112,5 +112,26 @@ impl TransaksiRepository {
         .await?;
         
         Ok(games)
+    }
+
+    pub async fn get_transaction_game_info_by_penjual(
+        &self,
+        penjual_id: &str
+    ) -> Result<Vec<TransactionGameInfo>, sqlx::Error> {
+        let results = sqlx::query_as!(
+            TransactionGameInfo,
+            r#"
+            SELECT DISTINCT t.id as transaksi_id, g.nama as game_nama, g.harga as game_harga, t.tanggal_pembayaran, t.pembeli_id
+            FROM transaksi t
+            JOIN transaksi_game tg ON t.id = tg.transaksi_id
+            JOIN game g ON tg.game_id = g.id
+            WHERE g.penjual_id = $1
+            "#,
+            penjual_id
+        )
+        .fetch_all(&self.pool)
+        .await?;
+        
+        Ok(results)
     }
 }
