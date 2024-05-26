@@ -1,8 +1,9 @@
+use crate::model::transaction_info::TransactionGameInfo;
 use crate::repository::transaksi_repository::TransaksiRepository;
 use crate::model::transaksi::Transaksi;
 
 pub struct TransaksiService {
-    repository: TransaksiRepository,
+    pub repository: TransaksiRepository,
 }
 
 impl TransaksiService {
@@ -39,4 +40,10 @@ impl TransaksiService {
         
         Ok(transactions)
     }
+
+    pub async fn get_transaction_game_info_by_penjual(&self, penjual_id: &str) -> Result<Vec<TransactionGameInfo>, String> {
+        self.repository.get_transaction_game_info_by_penjual(penjual_id)
+            .await.map_err(|e| e.to_string())
+    }
+
 }
