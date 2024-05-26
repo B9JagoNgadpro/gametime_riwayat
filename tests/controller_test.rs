@@ -63,7 +63,6 @@ mod tests {
             deskripsi: "A test game".to_string(),
             harga: 5000,
             kategori: "Action".to_string(),
-            penjual_id: Uuid::new_v4(),
         }
     }
 
@@ -72,7 +71,6 @@ mod tests {
             id: Uuid::new_v4(),
             games: vec![valid_game()],
             total_harga: 5000,
-            status_pembayaran: "Paid".to_string(),
             tanggal_pembayaran: Utc::now(),
             pembeli_id: Uuid::new_v4(),
         }

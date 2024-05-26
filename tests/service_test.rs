@@ -29,7 +29,6 @@ mod tests {
             CREATE TABLE IF NOT EXISTS transaksi (
                 id UUID PRIMARY KEY,
                 total_harga BIGINT NOT NULL,
-                status_pembayaran VARCHAR NOT NULL,
                 tanggal_pembayaran TIMESTAMPTZ NOT NULL,
                 pembeli_id UUID NOT NULL
             );
@@ -38,8 +37,7 @@ mod tests {
                 nama VARCHAR NOT NULL,
                 deskripsi TEXT NOT NULL,
                 harga BIGINT NOT NULL,
-                kategori VARCHAR NOT NULL,
-                penjual_id UUID NOT NULL
+                kategori VARCHAR NOT NULL
             );
             CREATE TABLE IF NOT EXISTS transaksi_game (
                 transaksi_id UUID NOT NULL,
@@ -63,7 +61,6 @@ mod tests {
             deskripsi: "A test game".to_string(),
             harga: 5000,
             kategori: "Action".to_string(),
-            penjual_id: Uuid::new_v4(),
         }
     }
 
@@ -72,7 +69,6 @@ mod tests {
             id: Uuid::new_v4(),
             games: vec![valid_game()],
             total_harga: 5000,
-            status_pembayaran: "Paid".to_string(),
             tanggal_pembayaran: Utc::now(),
             pembeli_id: Uuid::new_v4(),
         }

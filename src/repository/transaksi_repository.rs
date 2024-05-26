@@ -13,11 +13,10 @@ impl TransaksiRepository {
         transaksi: &Transaksi
     ) -> Result<(), sqlx::Error> {
         sqlx::query!(
-            "INSERT INTO transaksi (id, total_harga, status_pembayaran, tanggal_pembayaran, pembeli_id)
-             VALUES ($1, $2, $3, $4, $5)",
+            "INSERT INTO transaksi (id, total_harga, tanggal_pembayaran, pembeli_id)
+             VALUES ($1, $2, $3, $4)",
             transaksi.id,
             transaksi.total_harga as i64,
-            transaksi.status_pembayaran,
             transaksi.tanggal_pembayaran,
             transaksi.pembeli_id
         )
@@ -33,15 +32,14 @@ impl TransaksiRepository {
         game: &Game
     ) -> Result<(), sqlx::Error> {
         sqlx::query!(
-            "INSERT INTO game (id, nama, deskripsi, harga, kategori, penjual_id)
-             VALUES ($1, $2, $3, $4, $5, $6)
+            "INSERT INTO game (id, nama, deskripsi, harga, kategori)
+             VALUES ($1, $2, $3, $4, $5)
              ON CONFLICT (id) DO NOTHING",
             game.id,
             game.nama,
             game.deskripsi,
             game.harga as i64,
             game.kategori,
-            game.penjual_id
         )
         .execute(&mut **tx)
         .await?;
@@ -87,7 +85,6 @@ impl TransaksiRepository {
             id: record.id,
             games: Vec::new(), // Will be populated later
             total_harga: record.total_harga,
-            status_pembayaran: record.status_pembayaran,
             tanggal_pembayaran: record.tanggal_pembayaran,
             pembeli_id: record.pembeli_id,
         })
@@ -103,7 +100,7 @@ impl TransaksiRepository {
         let games = sqlx::query_as!(
             Game,
             r#"
-            SELECT g.id, g.nama, g.deskripsi, g.harga, g.kategori, g.penjual_id
+            SELECT g.id, g.nama, g.deskripsi, g.harga, g.kategori
             FROM game g
             JOIN transaksi_game tg ON g.id = tg.game_id
             WHERE tg.transaksi_id = $1

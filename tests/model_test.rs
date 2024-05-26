@@ -13,7 +13,6 @@ mod tests {
             deskripsi: "A test game".to_string(),
             harga: 5000,
             kategori: "Action".to_string(),
-            penjual_id: Uuid::new_v4(),
         }
     }
 
@@ -34,7 +33,6 @@ mod tests {
             "deskripsi": game.deskripsi,
             "harga": game.harga,
             "kategori": game.kategori,
-            "penjual_id": game.penjual_id
         });
 
         let deserialized_game: Game = serde_json::from_value(game_json).unwrap();
@@ -76,7 +74,6 @@ mod tests {
             id: Uuid::new_v4(),
             games: vec![valid_game()],
             total_harga: 5000,
-            status_pembayaran: "Paid".to_string(),
             tanggal_pembayaran: Utc::now(),
             pembeli_id: Uuid::new_v4(),
         }
@@ -101,10 +98,8 @@ mod tests {
                 "deskripsi": transaksi.games[0].deskripsi,
                 "harga": transaksi.games[0].harga,
                 "kategori": transaksi.games[0].kategori,
-                "penjual_id": transaksi.games[0].penjual_id
             }],
             "total_harga": transaksi.total_harga,
-            "status_pembayaran": transaksi.status_pembayaran,
             "tanggal_pembayaran": transaksi.tanggal_pembayaran,
             "pembeli_id": transaksi.pembeli_id
         });

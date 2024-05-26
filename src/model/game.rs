@@ -8,5 +8,4 @@ pub struct Game {
     pub deskripsi: String,
     pub harga: i64,
     pub kategori: String,
-    pub penjual_id: Uuid,
 }
