@@ -27,3 +27,15 @@ pub async fn get_user_transactions(
         }),
     }
 }
+
+pub async fn get_transaction_game_info_by_penjual(
+    penjual_id: web::Path<String>,
+    service: web::Data<TransaksiService>,
+) -> HttpResponse {
+    match service.get_transaction_game_info_by_penjual(&penjual_id).await {
+        Ok(results) => HttpResponse::Ok().json(results),
+        Err(err) => HttpResponse::InternalServerError().json(Response {
+            message: err,
+        }),
+    }
+}
