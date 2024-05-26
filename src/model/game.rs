@@ -1,11 +1,12 @@
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+#[derive(Serialize, Deserialize, Debug, PartialEq)]
 pub struct Game {
-    id: Uuid,
-    nama: String,
-    deskripsi: String,
-    harga: u64,
-    kategori: String,
-    stok: u64,
-    penjual_id: Uuid,
+    pub id: Uuid,
+    pub nama: String,
+    pub deskripsi: String,
+    pub harga: i64,
+    pub kategori: String,
+    pub penjual_id: Uuid,
 }
