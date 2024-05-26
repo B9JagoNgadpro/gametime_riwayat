@@ -60,6 +60,7 @@ mod tests {
             deskripsi: "A test game".to_string(),
             harga: 5000,
             kategori: "Action".to_string(),
+            penjual_id: "a@gmail.com".to_string(),
         }
     }
 
@@ -69,7 +70,7 @@ mod tests {
             games: vec![valid_game()],
             total_harga: 5000,
             tanggal_pembayaran: Utc::now(),
-            pembeli_id: Uuid::new_v4(),
+            pembeli_id: "a@gmail.com".to_string(),
         }
     }
 
@@ -127,7 +128,7 @@ mod tests {
 
         tx.commit().await.unwrap();
 
-        let transactions = repo.get_transactions_by_user(transaksi.pembeli_id).await.unwrap();
+        let transactions = repo.get_transactions_by_user(&transaksi.pembeli_id).await.unwrap();
         assert_eq!(transactions.len(), 1);
         assert_eq!(transactions[0], transaksi);
     }

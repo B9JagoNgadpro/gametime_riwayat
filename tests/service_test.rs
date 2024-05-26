@@ -61,6 +61,7 @@ mod tests {
             deskripsi: "A test game".to_string(),
             harga: 5000,
             kategori: "Action".to_string(),
+            penjual_id: "a@gmail.com".to_string(),
         }
     }
 
@@ -70,7 +71,7 @@ mod tests {
             games: vec![valid_game()],
             total_harga: 5000,
             tanggal_pembayaran: Utc::now(),
-            pembeli_id: Uuid::new_v4(),
+            pembeli_id: "a@gmail.com".to_string(),
         }
     }
 
@@ -94,7 +95,7 @@ mod tests {
         let transaksi = valid_transaksi();
         service.create_transaksi(transaksi.clone()).await.unwrap();
 
-        let transactions = service.get_user_transactions(transaksi.pembeli_id).await.unwrap();
+        let transactions = service.get_user_transactions(&transaksi.pembeli_id).await.unwrap();
         assert_eq!(transactions.len(), 1);
         assert_eq!(transactions[0].id, transaksi.id);
         assert_eq!(transactions[0].games.len(), 1);

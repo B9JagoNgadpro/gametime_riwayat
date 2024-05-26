@@ -9,20 +9,17 @@ use gametime_riwayat::controller::transaksi_controller::{create_transaksi, get_u
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::env;
-    use dotenv::dotenv;
     use sqlx::{migrate::MigrateDatabase, Executor, PgPool};
 
     async fn setup_test_db() -> PgPool {
-        dotenv().ok();
-        let database_url = env::var("DATABASE_URL").expect("Missing database URL");
+        let database_url = "postgres://user:password@localhost/test_db";
 
         // Create the database if it doesn't exist
-        if !sqlx::Postgres::database_exists(&database_url).await.unwrap_or(false) {
-            sqlx::Postgres::create_database(&database_url).await.unwrap();
+        if !sqlx::Postgres::database_exists(database_url).await.unwrap_or(false) {
+            sqlx::Postgres::create_database(database_url).await.unwrap();
         }
 
-        let pool = PgPool::connect(&database_url).await.unwrap();
+        let pool = PgPool::connect(database_url).await.unwrap();
 
         pool.execute(
             r#"
@@ -31,7 +28,7 @@ mod tests {
                 total_harga BIGINT NOT NULL,
                 status_pembayaran VARCHAR NOT NULL,
                 tanggal_pembayaran TIMESTAMPTZ NOT NULL,
-                pembeli_id UUID NOT NULL
+                pembeli_id VARCHAR NOT NULL
             );
             CREATE TABLE IF NOT EXISTS game (
                 id UUID PRIMARY KEY,
@@ -63,6 +60,7 @@ mod tests {
             deskripsi: "A test game".to_string(),
             harga: 5000,
             kategori: "Action".to_string(),
+            penjual_id: "a@gmail.com".to_string(),
         }
     }
 
@@ -72,7 +70,7 @@ mod tests {
             games: vec![valid_game()],
             total_harga: 5000,
             tanggal_pembayaran: Utc::now(),
-            pembeli_id: Uuid::new_v4(),
+            pembeli_id: "user@example.com".to_string(),
         }
     }
 
@@ -167,7 +165,7 @@ mod tests {
         .await;
 
         let req = test::TestRequest::get()
-            .uri(&format!("/get/{}", Uuid::new_v4()))
+            .uri("/get/invalid@example.com")
             .to_request();
 
         let resp: Vec<Transaksi> = test::call_and_read_body_json(&mut app, req).await;
