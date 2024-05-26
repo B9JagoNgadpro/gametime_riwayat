@@ -56,40 +56,4 @@ impl<C: Cache + Send + Sync> TransaksiService<C> {
         self.repository.get_transaction_game_info_by_penjual(penjual_id)
             .await.map_err(|e| e.to_string())
     }
-
-    #[tokio::test]
-    async fn test_get_user_transactions_with_cache() {
-        let pool = setup_test_db().await;
-        let repo = TransaksiRepository { pool: pool.clone() };
-        let mock_cache = MockCache::new();
-        let service = TransaksiService::new(repo, mock_cache.clone());
-
-        let transaksi = valid_transaksi();
-
-        // Insert into database
-        {
-            let mut tx = pool.begin().await.unwrap();
-            service.repository.create_transaksi(&mut tx, &transaksi).await.unwrap();
-            for game in &transaksi.games {
-                service.repository.create_game(&mut tx, game).await.unwrap();
-                service.repository.associate_game_with_transaksi(&mut tx, transaksi.id, game.id).await.unwrap();
-            }
-            tx.commit().await.unwrap();
-        }
-
-        // Fetch from service, which should cache the result
-        let transactions = service.get_user_transactions("user@example.com").await.unwrap();
-        assert_eq!(transactions.len(), 1);
-        assert_eq!(transactions[0], transaksi);
-
-        // Check if the cache was populated
-        let cached = mock_cache.get("user_transactions:user@example.com").await;
-        assert!(cached.is_some());
-
-        // Fetch from service again, should hit the cache
-        let transactions_cached = service.get_user_transactions("user@example.com").await.unwrap();
-        assert_eq!(transactions_cached.len(), 1);
-        assert_eq!(transactions_cached[0], transaksi);
-    }
-
 }

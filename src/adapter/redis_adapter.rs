@@ -5,13 +5,13 @@ use std::sync::Arc;
 use tokio::sync::Mutex;
 
 pub struct RedisAdapter {
-    pub client: Arc<Mutex<redis::aio::Connection>>,
+    pub client: Arc<Mutex<redis::aio::MultiplexedConnection>>,
 }
 
 impl RedisAdapter {
     pub async fn new(redis_url: &str) -> Self {
         let client = redis::Client::open(redis_url).unwrap();
-        let conn = client.get_async_connection().await.unwrap();
+        let conn = client.get_multiplexed_async_connection().await.unwrap();
         RedisAdapter {
             client: Arc::new(Mutex::new(conn)),
         }

@@ -1,8 +1,8 @@
+pub mod adapter;
+pub mod controller;
 pub mod model;
 pub mod repository;
 pub mod service;
-pub mod controller;
-pub mod adapter;
 
 use std::env;
 use dotenv::dotenv;
