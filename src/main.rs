@@ -6,10 +6,11 @@ pub mod controller;
 use std::env;
 use dotenv::dotenv;
 use actix_web::{ web, App, HttpServer };
+use actix_cors::Cors;
 use repository::transaksi_repository::TransaksiRepository;
 use service::transaksi_service::TransaksiService;
 use sqlx::postgres::{PgPool, PgPoolOptions };
-use crate::controller::transaksi_controller::{create_transaksi, get_user_transactions};
+use crate::controller::transaksi_controller::{create_transaksi, get_user_transactions, get_transaction_game_info_by_penjual};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -31,9 +32,17 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(service.clone())
+            .wrap(
+                Cors::default()
+                    .allow_any_origin()
+                    .allow_any_method()
+                    .allow_any_header()
+                    .max_age(3600)
+            )
             .route("/", web::get().to(|| async { "Hello, World!" }))
             .route("/create", web::post().to(create_transaksi))
             .route("/get/{user_id}", web::get().to(get_user_transactions))
+            .route("/get-penjual/{penjual_id}", web::get().to(get_transaction_game_info_by_penjual))
     })
     .bind(("127.0.0.1", port))?
     .run()
