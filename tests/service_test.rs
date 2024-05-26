@@ -101,4 +101,42 @@ mod tests {
         assert_eq!(transactions[0].games.len(), 1);
         assert_eq!(transactions[0].games[0].id, transaksi.games[0].id);
     }
+
+    #[tokio::test]
+    async fn test_get_transaction_game_info_by_penjual() {
+        let pool = setup_test_db().await;
+        let repo = TransaksiRepository { pool: pool.clone() };
+        let service = TransaksiService::new(repo);
+
+        let mut tx = pool.begin().await.unwrap();
+
+        let transaksi = valid_transaksi();
+        service.repository.create_transaksi(&mut tx, &transaksi).await.unwrap();
+        for game in &transaksi.games {
+            service.repository.create_game(&mut tx, game).await.unwrap();
+            service.repository.associate_game_with_transaksi(&mut tx, transaksi.id, game.id).await.unwrap();
+        }
+
+        tx.commit().await.unwrap();
+
+        let results = service.get_transaction_game_info_by_penjual("a@gmail.com").await.unwrap();
+        assert_eq!(results.len(), 1);
+        let result = &results[0];
+        assert_eq!(result.transaksi_id, transaksi.id);
+        assert_eq!(result.game_nama, transaksi.games[0].nama);
+        assert_eq!(result.game_harga, transaksi.games[0].harga);
+        assert_eq!(result.tanggal_pembayaran, transaksi.tanggal_pembayaran);
+        assert_eq!(result.pembeli_id, transaksi.pembeli_id);
+    }
+
+    #[tokio::test]
+    async fn test_get_transaction_game_info_by_penjual_no_results() {
+        let pool = setup_test_db().await;
+        let repo = TransaksiRepository { pool: pool.clone() };
+        let service = TransaksiService::new(repo);
+
+        let results = service.get_transaction_game_info_by_penjual("nonexistent@gmail.com").await.unwrap();
+        assert!(results.is_empty());
+    }
+
 }
